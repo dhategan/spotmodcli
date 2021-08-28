@@ -1,6 +1,8 @@
 import { Command, flags } from '@oclif/command'
 import { promises as fsp } from 'fs';
+import * as fs from 'fs';
 import * as inquirer from 'inquirer';
+import { resolve } from 'dns';
 
 
 export default class Init extends Command {
@@ -60,6 +62,7 @@ export default class Init extends Command {
         ])
 
         console.log(answers);
+
 
         await fsp.mkdir(answers.folder);
         await fsp.mkdir(`${answers.folder}/src`);
