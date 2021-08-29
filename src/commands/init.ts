@@ -64,7 +64,7 @@ export default class Init extends Command {
 
         ])
 
-        console.log(answers);
+        //console.log(answers);
 
         await fsp.mkdir(answers.folder);
         await fsp.mkdir(`${answers.folder}/src`);
