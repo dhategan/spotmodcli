@@ -1,8 +1,3 @@
-/*
- * Copyright © 2020. TIBCO Software Inc.
- * This file is subject to the license terms contained
- * in the license file that is distributed with this file.
- */
 
 //@ts-check - Get type warnings from the TypeScript language server. Remove if not wanted.
 
