@@ -55,7 +55,8 @@
     "@oclif/command": "^1.8.0",
     "@oclif/config": "^1.17.0",
     "@oclif/plugin-help": "^3.2.3",
-    "handlebars": "^4.7.7",
+    "@types/fs-extra": "^9.0.12",
+    "fs-extra": "^10.0.0",
     "tslib": "^1.14.1"
   }
 }
