@@ -9,6 +9,7 @@ import * as child from 'child_process';
 import * as util from 'util'
 
 
+
 export default class Init extends Command {
     static description = 'Initialize a new Spotfire Mods project'
 
@@ -92,7 +93,7 @@ export default class Init extends Command {
         let manifestJson = JSON.parse(manifest.toString());
         manifestJson.apiVersion = answers.apiVersion;
         manifestJson.name = answers.modName;
-        await fsp.writeFile(destinationManifestPath, JSON.stringify(manifestJson));
+        await fsp.writeFile(destinationManifestPath, JSON.stringify(manifestJson, null,'\t'));
 
         // Add the vscode files 
         if (answers.vsCode) {
@@ -115,7 +116,7 @@ export default class Init extends Command {
             delete packageJson.devDependencies["@tibco/spotfire-mods-dev-server"]
         }
 
-        await fsp.writeFile(destinationPackagePath, JSON.stringify(packageJson));
+        await fsp.writeFile(destinationPackagePath, JSON.stringify(packageJson, null, '\t'));
 
         console.log("Installing packages...");
         //let spawn  = util.promisify(child.spawn);
