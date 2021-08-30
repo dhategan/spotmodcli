@@ -43,8 +43,29 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
+* [`spotmodcli hello [FILE]`](#spotmodcli-hello-file)
 * [`spotmodcli help [COMMAND]`](#spotmodcli-help-command)
 * [`spotmodcli init`](#spotmodcli-init)
+
+## `spotmodcli hello [FILE]`
+
+describe the command here
+
+```
+USAGE
+  $ spotmodcli hello [FILE]
+
+OPTIONS
+  -f, --force
+  -h, --help       show CLI help
+  -n, --name=name  name to print
+
+EXAMPLE
+  $ spotmodcli hello
+  hello world from ./src/hello.ts!
+```
+
+_See code: [src/commands/hello.ts](https://github.com/dhategan/spotmodcli/blob/v0.1.0/src/commands/hello.ts)_
 
 ## `spotmodcli help [COMMAND]`
 
