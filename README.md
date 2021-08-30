@@ -12,6 +12,9 @@ Command line tool for Spotfire Mods
 * [Usage](#usage)
 * [Commands](#commands)
 <!-- tocstop -->
+* [Usage](#usage)
+* [Commands](#commands)
+<!-- tocstop -->
 # Usage
 <!-- usage -->
 ```sh-session
@@ -26,8 +29,51 @@ USAGE
 ...
 ```
 <!-- usagestop -->
+```sh-session
+$ npm install -g spotmodcli
+$ spotmodcli COMMAND
+running command...
+$ spotmodcli (-v|--version|version)
+spotmodcli/0.1.0 win32-x64 node-v16.7.0
+$ spotmodcli --help [COMMAND]
+USAGE
+  $ spotmodcli COMMAND
+...
+```
+<!-- usagestop -->
 # Commands
 <!-- commands -->
+* [`spotmodcli help [COMMAND]`](#spotmodcli-help-command)
+* [`spotmodcli init`](#spotmodcli-init)
+
+## `spotmodcli help [COMMAND]`
+
+display help for spotmodcli
+
+```
+USAGE
+  $ spotmodcli help [COMMAND]
+
+ARGUMENTS
+  COMMAND  command to show help for
+
+OPTIONS
+  --all  see all commands in CLI
+```
+
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.2.3/src/commands/help.ts)_
+
+## `spotmodcli init`
+
+Initialize a new Spotfire Mods project
+
+```
+USAGE
+  $ spotmodcli init
+```
+
+_See code: [src/commands/init.ts](https://github.com/dhategan/spotmodcli/blob/v0.1.0/src/commands/init.ts)_
+<!-- commandsstop -->
 * [`spotmodcli hello [FILE]`](#spotmodcli-hello-file)
 * [`spotmodcli help [COMMAND]`](#spotmodcli-help-command)
 
