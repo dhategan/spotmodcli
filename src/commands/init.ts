@@ -93,7 +93,7 @@ export default class Init extends Command {
         let manifestJson = JSON.parse(manifest.toString());
         manifestJson.apiVersion = answers.apiVersion;
         manifestJson.name = answers.modName;
-        await fsp.writeFile(destinationManifestPath, JSON.stringify(manifestJson, null,'\t'));
+        await fsp.writeFile(destinationManifestPath, JSON.stringify(manifestJson, null, '\t'));
 
         // Add the vscode files 
         if (answers.vsCode) {
@@ -110,19 +110,28 @@ export default class Init extends Command {
         let packageJson = JSON.parse(packageFile.toString());
 
         packageJson.name = answers.modName;
-        if(!answers.devServer) {
+        if (!answers.devServer) {
             packageJson.scripts.start = "npm install";
             delete packageJson.scripts.server;
             delete packageJson.devDependencies["@tibco/spotfire-mods-dev-server"]
         }
-
         await fsp.writeFile(destinationPackagePath, JSON.stringify(packageJson, null, '\t'));
 
+        // Add the tsconfig file
+        if (answers.typeScript) {
+            let sourceTSConfigPath = path.join(__dirname, "..", `template/tsconfig.json`);
+            let destinationTSConfigPath = `${answers.folder}/tsconfig.json`;
+            let tsFile = await fsp.readFile(sourceTSConfigPath);
+            let tsJson = JSON.parse(tsFile.toString());
+
+            await fsp.writeFile(destinationTSConfigPath, JSON.stringify(tsJson, null, '\t'));
+        }
+
+
         console.log("Installing packages...");
-        //let spawn  = util.promisify(child.spawn);
-        //let s= await spawn("npm.cmd",["install"], {cwd:`${answers.folder}` });
-        let exec  = util.promisify(child.exec);
-        await exec("npm install", {cwd:`${answers.folder}` });
+
+        let exec = util.promisify(child.exec);
+        await exec("npm install", { cwd: `${answers.folder}` });
 
         console.log("Project created.")
 
