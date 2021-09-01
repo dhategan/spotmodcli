@@ -14,6 +14,8 @@ export default class Init extends Command {
     static description = 'Initialize a new Spotfire Mods project'
 
     async run() {
+        let logo = await fsp.readFile(path.join(__dirname, "..", `template/logo.txt`));
+        this.log(logo.toString(), "\n");
         this.log("Creating a new Spotfire Mods porject");
         this.log("If you don't know what options to chose accept the default ones.");
         this.log("");
@@ -126,7 +128,6 @@ export default class Init extends Command {
 
             await fsp.writeFile(destinationTSConfigPath, JSON.stringify(tsJson, null, '\t'));
         }
-
 
         console.log("Installing packages...");
 
