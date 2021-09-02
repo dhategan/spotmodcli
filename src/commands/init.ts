@@ -1,154 +1,198 @@
-import { Command, flags } from '@oclif/command'
-import { string } from '@oclif/command/lib/flags';
-import { promises as fsp } from 'fs';
+import { Command, flags } from "@oclif/command";
+import { string } from "@oclif/command/lib/flags";
+import { promises as fsp } from "fs";
 import * as fs from "fs-extra";
-import * as path from 'path'
-import * as inquirer from 'inquirer';
-import { template } from '@oclif/plugin-help/lib/util';
-import * as child from 'child_process';
-import * as util from 'util'
-
-
+import * as path from "path";
+import * as inquirer from "inquirer";
+import { template } from "@oclif/plugin-help/lib/util";
+import * as child from "child_process";
+import * as util from "util";
 
 export default class Init extends Command {
-    static description = 'Initialize a new Spotfire Mods project'
+  static description = "Initialize a new Spotfire Mods project";
 
-    async run() {
-        let logo = await fsp.readFile(path.join(__dirname, "..", `template/logo.txt`));
-        this.log(logo.toString(), "\n");
-        this.log("Creating a new Spotfire Mods porject");
-        this.log("If you don't know what options to chose accept the default ones.");
-        this.log("");
+  async run() {
+    let logo = await fsp.readFile(
+      path.join(__dirname, "..", `template/logo.txt`)
+    );
+    this.log(logo.toString(), "\n");
+    this.log("Creating a new Spotfire Mods porject");
+    this.log(
+      "If you don't know what options to chose accept the default ones."
+    );
+    this.log("");
 
-        let answers = await inquirer.prompt([
-            {
-                type: "input",
-                name: "folder",
-                message: "Project folder name: ",
-                default: 'new-spofire-mod'
-            },
-            {
-                type: "input",
-                name: "modName",
-                message: "Mode name: ",
-                default: 'new-spofire-mod'
-            },
-            {
-                type: "input",
-                name: "modId",
-                message: "Mode id: ",
-                default: 'new-spofire-mod'
-            },
-            {
-                type: "input",
-                name: "modVersion",
-                message: "Mod version: ",
-                default: '1.0'
-            },
-            {
+    let answers = await inquirer.prompt([
+      {
+        type: "input",
+        name: "folder",
+        message: "Project folder name: ",
+        default: "new-spofire-mod",
+      },
+      {
+        type: "input",
+        name: "modName",
+        message: "Mode name: ",
+        default: "new-spofire-mod",
+      },
+      {
+        type: "input",
+        name: "modId",
+        message: "Mode id: ",
+        default: "new-spofire-mod",
+      },
+      {
+        type: "input",
+        name: "modVersion",
+        message: "Mod version: ",
+        default: "1.0",
+      },
+      {
+        type: "list",
+        name: "apiVersion",
+        message: "API Version: ",
+        default: "1.3",
+        choices: [
+          { name: "1.0 - Spotfire 11.0", value: "1.0" },
+          { name: "1.1 - Spotfire 11.3", value: "1.1" },
+          { name: "1.2 - Spotfire 11.4", value: "1.2" },
+          { name: "1.3 - Spotfire 11.5", value: "1.3" },
+        ],
+      },
+      {
+        type: "confirm",
+        name: "typeScript",
+        message: "Use TypeScript (bundle with Webpack)",
+        default: false,
+      },
+      {
+        type: "confirm",
+        name: "devServer",
+        message: "Use Spotfire Mods dev server",
+        default: true,
+      },
+      {
+        type: "confirm",
+        name: "vsCode",
+        message: "Enable VS Code compatibility:",
+        default: true,
+      },
+    ]);
 
-                type: "list",
-                name: "apiVersion",
-                message: "API Version: ",
-                default: "1.3",
-                choices: [
-                    { name: "1.0 - Spotfire 11.0", value: "1.0" },
-                    { name: "1.1 - Spotfire 11.3", value: "1.1" },
-                    { name: "1.2 - Spotfire 11.4", value: "1.2" },
-                    { name: "1.3 - Spotfire 11.5", value: "1.3" }
-                ]
-            },
-            {
-                type: "confirm",
-                name: "typeScript",
-                message: "Use TypeScript",
-                default: false
-            },
-            {
-                type: "confirm",
-                name: "devServer",
-                message: "Use Spotfire Mods dev server",
-                default: true
-            },
-            {
-                type: "confirm",
-                name: "vsCode",
-                message: "Enable VS Code compatibility:",
-                default: true
-            },
+    //console.log(answers);
 
-        ])
+    let projectType = `${answers.typeScript ? "ts" : "js"}`;
+    let files = answers.typeScript ? 
+      ["index.html","main.css","main.js"] : 
+      ["index.html","main.css","bundle.js"];  
 
-        //console.log(answers);
-
-        await fsp.mkdir(answers.folder);
-        await fsp.mkdir(`${answers.folder}/src`);
-        await fsp.mkdir(`${answers.folder}/spotfire`);
-
-        // Add API type definitions
-        let sourceApiPath = path.join(__dirname, "..", `template/spotfire/${answers.apiVersion}/spotfire-api-${answers.apiVersion.replace('.', '-')}.d.ts`);
-        let destinatioApiPath = `${answers.folder}/spotfire/spotfire-api-${answers.apiVersion.replace('.', '-')}.d.ts`
-        await fsp.copyFile(sourceApiPath, destinatioApiPath);
-
-        // Add mod schema
-        let sourceSchemaPath = path.join(__dirname, "..", `template/spotfire/${answers.apiVersion}/mod-schema.json`);
-        let destinationSchemaPath = `${answers.folder}/spotfire/mod-schema.json`;
-        await fsp.copyFile(sourceSchemaPath, destinationSchemaPath);
-
-        // Add the source files 
-        let sourceSrcPath = path.join(__dirname, "..", `template/src/`);
-        let destinationSrcPath = `${answers.folder}/src/`
-        await fs.copy(sourceSrcPath, destinationSrcPath);
-
-        // Add the mod manifest
-        let sourceManifestPath = path.join(__dirname, "..", `template/spotfire/${answers.apiVersion}/mod-manifest.json`);
-        let destinationManifestPath = `${answers.folder}/src/mod-manifest.json`;
-        let manifest = await fsp.readFile(sourceManifestPath);
-        let manifestJson = JSON.parse(manifest.toString());
-        manifestJson.apiVersion = answers.apiVersion;
-        manifestJson.name = answers.modName;
-        manifestJson.id = answers.modId;
-        manifestJson.version = answers.modVersion;
-        await fsp.writeFile(destinationManifestPath, JSON.stringify(manifestJson, null, '\t'));
-
-        // Add the vscode files 
-        if (answers.vsCode) {
-            let sourceVSCodePath = path.join(__dirname, "..", `template/vscode`);
-            let destinationVSCodePath = `${answers.folder}/.vscode/`
-            await fsp.mkdir(`${answers.folder}/.vscode`);
-            await fs.copy(sourceVSCodePath, destinationVSCodePath);
-        }
-
-        // Add the package.json file
-        let sourcePackagePath = path.join(__dirname, "..", `template/package.json`);
-        let destinationPackagePath = `${answers.folder}/package.json`;
-        let packageFile = await fsp.readFile(sourcePackagePath);
-        let packageJson = JSON.parse(packageFile.toString());
-
-        packageJson.name = answers.modName;
-        if (!answers.devServer) {
-            packageJson.scripts.start = "npm install";
-            delete packageJson.scripts.server;
-            delete packageJson.devDependencies["@tibco/spotfire-mods-dev-server"]
-        }
-        await fsp.writeFile(destinationPackagePath, JSON.stringify(packageJson, null, '\t'));
-
-        // Add the tsconfig file
-        if (answers.typeScript) {
-            let sourceTSConfigPath = path.join(__dirname, "..", `template/tsconfig.json`);
-            let destinationTSConfigPath = `${answers.folder}/tsconfig.json`;
-            let tsFile = await fsp.readFile(sourceTSConfigPath);
-            let tsJson = JSON.parse(tsFile.toString());
-
-            await fsp.writeFile(destinationTSConfigPath, JSON.stringify(tsJson, null, '\t'));
-        }
-
-        console.log("Installing packages...");
-
-        let exec = util.promisify(child.exec);
-        await exec("npm install", { cwd: `${answers.folder}` });
-
-        console.log("Project created.")
-
+    await fsp.mkdir(answers.folder);    
+    await fsp.mkdir(`${answers.folder}/src`);
+    await fsp.mkdir(`${answers.folder}/spotfire`);
+    if(answers.typeScript){
+      await fsp.mkdir(`${answers.folder}/static`);
     }
+
+    //------------------------
+    // Add API type definitions 
+    //------------------------
+    let sourceApiPath = path.join(__dirname, "..", `template/spotfire/${answers.apiVersion}/spotfire-api-${answers.apiVersion.replace(".", "-")}.d.ts`);
+    let destinatioApiPath = `${answers.folder}/spotfire/spotfire-api-${answers.apiVersion.replace(".", "-")}.d.ts`;
+    await fsp.copyFile(sourceApiPath, destinatioApiPath);
+
+    //------------------------
+    // Add mod schema
+    //------------------------
+    let sourceSchemaPath = path.join(__dirname, "..", `template/spotfire/${answers.apiVersion}/mod-schema.json`);
+    let destinationSchemaPath = `${answers.folder}/spotfire/mod-schema.json`;
+    await fsp.copyFile(sourceSchemaPath, destinationSchemaPath);
+
+    //------------------------
+    // Add the source files
+    //------------------------
+    let sourceSrcPath = path.join(__dirname, "..", `template/${projectType}/src/`);
+    let destinationSrcPath = `${answers.folder}/src/`;
+    await fs.copy(sourceSrcPath, destinationSrcPath);
+
+    if(answers.typeScript){
+      let sourceStaticPath = path.join(__dirname, "..", `template/${projectType}/static/`);
+      let destinationStaticPath = `${answers.folder}/static/`;
+      await fs.copy(sourceStaticPath, destinationStaticPath);
+    }
+
+    //------------------------
+    // Add the mod manifest
+    //------------------------
+    let sourceManifestPath = path.join(__dirname, "..", `template/spotfire/${answers.apiVersion}/mod-manifest.json`);
+    let destinationManifestPath = `${answers.folder}/src/mod-manifest.json`;
+    let manifest = await fsp.readFile(sourceManifestPath);
+    let manifestJson = JSON.parse(manifest.toString());
+    manifestJson.apiVersion = answers.apiVersion;
+    manifestJson.name = answers.modName;
+    manifestJson.id = answers.modId;
+    manifestJson.version = answers.modVersion;
+    manifestJson.files = files;
+    await fsp.writeFile(
+      destinationManifestPath,
+      JSON.stringify(manifestJson, null, "\t")
+    );
+
+    //------------------------
+    // Add the vscode files
+    //------------------------
+    if (answers.vsCode) {
+      let sourceVSCodePath = path.join(__dirname, "..", `template/vscode`);
+      let destinationVSCodePath = `${answers.folder}/.vscode/`;
+      await fsp.mkdir(`${answers.folder}/.vscode`);
+      await fs.copy(sourceVSCodePath, destinationVSCodePath);
+    }
+
+    //----------------------------
+    // Add the package.json file
+    //----------------------------
+    let sourcePackagePath = path.join(__dirname, "..", `template/${projectType}/package.json`);
+    let destinationPackagePath = `${answers.folder}/package.json`;
+    let packageFile = await fsp.readFile(sourcePackagePath);
+    let packageJson = JSON.parse(packageFile.toString());
+
+    packageJson.name = answers.modName;
+    if (!answers.devServer) {
+      packageJson.scripts.start = "npm install";
+      delete packageJson.scripts.server;
+      delete packageJson.devDependencies["@tibco/spotfire-mods-dev-server"];
+    }
+    await fsp.writeFile(destinationPackagePath, JSON.stringify(packageJson, null, "\t"));
+
+    //-------------------------
+    // Add the tsconfig file
+    //-------------------------
+    let sourceTSConfigPath = path.join(__dirname, "..", `template/${projectType}/tsconfig.json`);
+    let destinationTSConfigPath = `${answers.folder}/tsconfig.json`;
+    let tsFile = await fsp.readFile(sourceTSConfigPath);
+    let tsJson = JSON.parse(tsFile.toString());
+    // Edit file here
+    await fsp.writeFile(destinationTSConfigPath, JSON.stringify(tsJson, null, "\t"));
+
+        //-------------------------
+    // Add the webpack.config file for typescript projects 
+    //-------------------------
+    if(answers.typeScript) {
+      let sourceWebpackPath = path.join(__dirname, "..", `template/${projectType}/webpack.config.js`);
+      let destinationWebpackPath = `${answers.folder}/webpack.config.js`;
+      let wpFile = await fsp.readFile(sourceWebpackPath);
+      let wpText = wpFile.toString();
+      // Edit file here 
+      await fsp.writeFile(destinationWebpackPath, wpText);
+    }
+
+    console.log("Installing packages...");
+
+    //-------------------------
+    // Install packages
+    //-------------------------
+    let exec = util.promisify(child.exec);
+    await exec("npm install", { cwd: `${answers.folder}` });
+
+    console.log("Project created.");
+  }
 }
