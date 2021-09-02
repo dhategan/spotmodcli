@@ -34,6 +34,18 @@ export default class Init extends Command {
                 default: 'new-spofire-mod'
             },
             {
+                type: "input",
+                name: "modId",
+                message: "Mode id: ",
+                default: 'new-spofire-mod'
+            },
+            {
+                type: "input",
+                name: "modVersion",
+                message: "Mod version: ",
+                default: '1.0'
+            },
+            {
 
                 type: "list",
                 name: "apiVersion",
@@ -95,6 +107,8 @@ export default class Init extends Command {
         let manifestJson = JSON.parse(manifest.toString());
         manifestJson.apiVersion = answers.apiVersion;
         manifestJson.name = answers.modName;
+        manifestJson.id = answers.modId;
+        manifestJson.version = answers.modVersion;
         await fsp.writeFile(destinationManifestPath, JSON.stringify(manifestJson, null, '\t'));
 
         // Add the vscode files 
