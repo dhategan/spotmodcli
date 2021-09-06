@@ -36,9 +36,5 @@
             }
         ]
     },
-    "files": [
-        "index.html",
-        "main.css",
-        "main.js"
-    ]
+    "files": []
 }
