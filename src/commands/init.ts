@@ -83,8 +83,8 @@ export default class Init extends Command {
 
     let projectType = `${answers.typeScript ? "ts" : "js"}`;
     let files = answers.typeScript ? 
-      ["index.html","main.css","main.js"] : 
-      ["index.html","main.css","bundle.js"];  
+      ["index.html","main.css","bundle.js"]:
+      ["index.html","main.css","main.js"];
 
     await fsp.mkdir(answers.folder);    
     await fsp.mkdir(`${answers.folder}/src`);
@@ -124,7 +124,7 @@ export default class Init extends Command {
     // Add the mod manifest
     //------------------------
     let sourceManifestPath = path.join(__dirname, "..", `template/spotfire/${answers.apiVersion}/mod-manifest.json`);
-    let destinationManifestPath = `${answers.folder}/src/mod-manifest.json`;
+    let destinationManifestPath = `${answers.folder}/${answers.typeScript?'static/':'src/'}mod-manifest.json`;
     let manifest = await fsp.readFile(sourceManifestPath);
     let manifestJson = JSON.parse(manifest.toString());
     manifestJson.apiVersion = answers.apiVersion;
