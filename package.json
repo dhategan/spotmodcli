@@ -57,6 +57,7 @@
     "@oclif/plugin-help": "^3.2.3",
     "@types/fs-extra": "^9.0.12",
     "fs-extra": "^9.0.12",
+    "glob": "^7.1.7",
     "inquirer": "^8.1.2",
     "rimraf": "^3.0.2",
     "ts-node": "^8.10.2",

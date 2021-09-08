@@ -1,5 +1,4 @@
 // Import the Spotfire module
-import { SpotfireDocument } from "../spotfire/spotfire-api-1-3";
 import { Spotfire } from "./api";
 
 /**

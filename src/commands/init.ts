@@ -16,10 +16,8 @@ export default class Init extends Command {
       path.join(__dirname, "..", `template/logo.txt`)
     );
     this.log(logo.toString(), "\n");
-    this.log("Creating a new Spotfire Mods porject");
-    this.log(
-      "If you don't know what options to chose accept the default ones."
-    );
+    this.log("Creating a new Spotfire Mods project");
+    this.log("If you don't know what options to chose accept the default ones.");
     this.log("");
 
     let answers = await inquirer.prompt([
