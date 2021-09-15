@@ -12,9 +12,8 @@ export default class Init extends Command {
   static description = "Initialize a new Spotfire Mods project";
 
   async run() {
-    let logo = await fsp.readFile(
-      path.join(__dirname, "..", `template/logo.txt`)
-    );
+    let logo = await fsp.readFile(path.join(__dirname, "..", `template/logo.txt`));
+    
     this.log(logo.toString(), "\n");
     this.log("Creating a new Spotfire Mods project");
     this.log("If you don't know what options to chose accept the default ones.");
@@ -42,6 +41,7 @@ export default class Init extends Command {
       {
         type: "input",
         name: "modVersion",
+        validate: (i) => { return /^[0-9]+(\.[0-9]+)*$/.test(i) ? true : "Version should be of form x.x... (e.g. 1.1.2)"},
         message: "Mod version: ",
         default: "1.0",
       },
@@ -76,8 +76,6 @@ export default class Init extends Command {
         default: true,
       },
     ]);
-
-    //console.log(answers);
 
     let projectType = `${answers.typeScript ? "ts" : "js"}`;
     let files = answers.typeScript ? 

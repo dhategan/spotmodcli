@@ -1,11 +1,8 @@
-// Import the Spotfire module
-import { Spotfire } from "./api";
-
 /**
  * Get access to the Spotfire Mod API by providing a callback to the initialize method.
  * @param {Spotfire.Mod} mod - mod api
  */
-Spotfire.initialize(async (mod) => {
+window.Spotfire.initialize(async (mod) => {
     /**
      * Create the read function.
      */

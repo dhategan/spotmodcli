@@ -1,22 +1,11 @@
 import { Command, flags } from "@oclif/command";
-import { string } from "@oclif/command/lib/flags";
 import { promises as fsp } from "fs";
-import * as fs from "fs-extra";
 import * as path from "path";
 import * as inquirer from "inquirer";
-import { template } from "@oclif/plugin-help/lib/util";
-import * as child from "child_process";
-import * as util from "util";
 import * as glob from "glob";
-import { dir } from "console";
-import { connected } from "process";
-
 export default class Update extends Command {
-  static description = `
-  Update a Spotfire Mods project to another API version.
-  This will only update the API type defintions, the mod schema file, and the API version in the mod manifest file.
-  After this it might be necesary to revise the mod source code so that it's aligned with the new api version.  
-  `
+  static description = `Update a Spotfire Mods project to another API version. After this it might be necesary to revise the mod source code so that it's aligned with the new api version.
+`
   static args = [
     {name: 'path'}
   ]
@@ -25,15 +14,16 @@ export default class Update extends Command {
   async run() {
 
     const {args} = this.parse(Update)
+	let dirPath = path.normalize(process.cwd() + "/" + args.path).toString() ;
 
-    this.log(Update.description);
+    this.log(`Updating project found at ${dirPath}`);
+	this.log('');
     
     let confirm = await inquirer.prompt([
       {
         type: "confirm",
         name: "continue",
-        message: `This will permanetly alter some of your project's files. 
-  It's advisable to make a back-up before proceeding. 
+        message: `This will permanetly alter some of your project's files. It's advisable to make a backup before proceeding. 
   Are you sure you want to continue? `,
         default: true
       }
@@ -42,8 +32,6 @@ export default class Update extends Command {
     if(!confirm.continue) {
       return;
     }
-
-    let dirPath = path.normalize(process.cwd() + "/" + args.path).toString() ;
 
 
     //-------------------------------------
@@ -61,7 +49,7 @@ export default class Update extends Command {
         {
           type: "list",
           name: "manifestPath",
-          message: `Multiple mod-manifest.json files found.Which one to update? `,
+          message: `Multiple mod-manifest.json files found. Which one to update? `,
           default: 0,
           choices: manifestPath.map( p => {return {name:p, value:p}})
         }
