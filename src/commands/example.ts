@@ -137,46 +137,5 @@ export default class Example extends Command {
 
     await fsp.writeFile(manifestPath[0], JSON.stringify(manifestJson, null, "\t"));
     await this.removeFolder(tempFolder);
-    
-    
-
-
-
-
-  
-
-
-    
-      
-
-    
-   
-    
-
-
-   
-   //let gitExampels = gitExampelsResponse.map((e)=> e.name)
-   //let examplesZip = await got('https://api.github.com/repos/tibcosoftware/spotfire-mods/zipball').buffer();
-   //let result = contents.filter((path,file) => path.endsWith("js-dev-starter"))
-   //let data  =  result[0].async("uint8array");
-   
-
-//    let examplesZip = await fsp.readFile('D:/TIBCOSoftware-spotfire-mods-1.2.0-5-gb8bd70f.zip');
-//    let tempPath = path.normalize(process.cwd() + "/temp/").toString() ;
-//    await this.removeFolder(tempPath);
-//    await this.extract(examplesZip,tempPath)
-
-  
-
-   
-   
-   
-   
-   
-
-//    let exec = util.promisify(child.exec);
-//    await exec("git  install", { cwd: `${answers.folder}` });
-
-
   }
 }
