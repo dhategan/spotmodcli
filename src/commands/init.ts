@@ -181,11 +181,12 @@ export default class Init extends Command {
       await fsp.writeFile(destinationWebpackPath, wpText);
     }
 
-    console.log("Installing packages...");
+    
 
     //-------------------------
     // Install packages
     //-------------------------
+    console.log("Installing packages...");
     let exec = util.promisify(child.exec);
     await exec("npm install", { cwd: `${answers.folder}` });
 

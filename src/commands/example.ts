@@ -109,7 +109,6 @@ export default class Example extends Command {
     // Add the mod manifest
     //------------------------
     let  manifestPath = glob.sync(answers.folder + "/**/mod-manifest.json");
-    console.log(manifestPath+"-----------------");
     if(manifestPath.length === 0){
         console.log(`There is no mod-manifest.json in ${answers.folder}`);
         return;
@@ -137,5 +136,15 @@ export default class Example extends Command {
 
     await fsp.writeFile(manifestPath[0], JSON.stringify(manifestJson, null, "\t"));
     await this.removeFolder(tempFolder);
+
+    //-------------------------
+    // Install packages
+    //-------------------------
+    console.log("Installing packages...");
+    let exec = util.promisify(child.exec);
+    await exec("npm install", { cwd: `${answers.folder}` });
+
+    console.log("Project created.");
+
   }
 }
